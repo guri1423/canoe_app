@@ -54,7 +54,23 @@ class _SigninState extends State<Signin> {
                     )
                 ),
             ),
-      SizedBox(height: 70),
+      SizedBox(height: 20),
+      GestureDetector(
+        onTap:(){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Forgot_pass()));
+        },
+        child: Container(
+          height: 50,
+          alignment: Alignment.center,
+          child: Center(
+            child: Text('Forgot Password', style: TextStyle(
+              color: Colors.black,
+              fontSize: 17,
+            ),),
+          ),
+        ),
+      ),
+      SizedBox(height: 30),
       GestureDetector(
         onTap:(){
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Home()));
