@@ -29,13 +29,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  pin_entry_text_field: 0.1.4
+  pin_code_text_field:
+  circular_reveal_animation: ^2.0.0
+  expandable: ^5.0.1
+  syncfusion_flutter_maps: ^18.2.44-beta
 
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  google_maps_flutter: ^2.1.5
+  location: ^4.1.1
+  firebase_core: ^1.17.0
+  firebase_database: ^9.0.14
 
 dev_dependencies:
   flutter_test:
@@ -63,9 +70,25 @@ flutter:
   assets:
     - images/image15.png
     - images/image16.png
-    - images/image12.png
     - images/image13.png
     - images/image11.png
+    - images/icon1.png
+    - images/icon2.png
+    - images/icon3.png
+    - images/icon4.png
+    - images/redlogo.png
+    - images/boat.png
+    - images/background.png
+    - images/pinicon.png
+    - images/edit.png
+    - images/duty.png
+    - images/del.png
+    - images/cnt.png
+    - images/confirm.png
+    - images/deleteicon.png
+    - images/image14.png
+    - images/boat_icon.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

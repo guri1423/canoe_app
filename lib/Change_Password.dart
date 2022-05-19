@@ -1,14 +1,17 @@
-import 'package:canoe_app/otp.dart';
+import 'package:canoe_app/home.dart';
+import 'package:canoe_app/signin.dart';
 import 'package:flutter/material.dart';
 
-class Forgot_pass extends StatefulWidget {
-  const Forgot_pass({Key? key}) : super(key: key);
+import 'forgotpassword.dart';
+
+class ChangePassword extends StatefulWidget {
+  const ChangePassword({Key? key}) : super(key: key);
 
   @override
-  State<Forgot_pass> createState() => _Forgot_passState();
+  State<ChangePassword> createState() => _ChangePasswordState();
 }
 
-class _Forgot_passState extends State<Forgot_pass> {
+class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +19,7 @@ class _Forgot_passState extends State<Forgot_pass> {
             padding: EdgeInsets.symmetric(horizontal: 24,vertical: 100),
             child: Column(
                 children: [
-                  Text('Forgot Password',
+                  Text('Create New Password',
                       style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold
@@ -24,7 +27,7 @@ class _Forgot_passState extends State<Forgot_pass> {
                   Padding(
                     padding: const EdgeInsets.all(40.0),
                     child: Container(
-                      child: Image.asset('images/image13.png'),
+                      child: Image.asset('images/image14.png'),
                     ),
                   ),
                   TextField(
@@ -33,16 +36,34 @@ class _Forgot_passState extends State<Forgot_pass> {
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0)
                         ),
-                        hintText: 'Enter Your Email',
+                        hintText: 'New Password',
+                        suffixIcon: Icon(Icons.visibility),
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         )
                     ),
                   ),
+                  SizedBox(height: 20),
+                  TextField(
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(12),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0)
+                        ),
+                        hintText: 'Confirm Password',
+                        suffixIcon: Icon(Icons.visibility),
+                        hintStyle: TextStyle(
+                            color: Colors.grey
+                        )
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+
                   SizedBox(height: 30),
                   GestureDetector(
                     onTap:(){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Send_Code()));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Signin()));
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -53,17 +74,16 @@ class _Forgot_passState extends State<Forgot_pass> {
                       alignment: Alignment.center,
                       width:MediaQuery.of(context).size.width,
                       child: Center(
-                        child: Text('Send a Code', style: TextStyle(
+                        child: Text('Done', style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                         ),),
                       ),
                     ),
-                  ),]
+                  ),
+                ]
             )
         )
-
     );
-
   }
 }

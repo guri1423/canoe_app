@@ -1,8 +1,10 @@
-import 'package:canoe_app/firstscreen.dart';
-import 'package:canoe_app/sinup.dart';
+import 'package:canoe_app/welcome_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp().then((value) => print(value));
   runApp(const MyApp());
 }
 
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blue,
       ),
-      home: SignUp(),
+      home: WelcomeScreen(),
     );
   }
 }

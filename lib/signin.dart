@@ -1,3 +1,4 @@
+import 'package:canoe_app/Location_provider.dart';
 import 'package:canoe_app/home.dart';
 import 'package:flutter/material.dart';
 
@@ -49,12 +50,14 @@ class _SigninState extends State<Signin> {
                         borderRadius: BorderRadius.circular(10.0)
                     ),
                     hintText: 'Enter Your Password',
+                    suffixIcon: Icon(Icons.visibility),
                     hintStyle: TextStyle(
                         color: Colors.grey
                     )
                 ),
             ),
       SizedBox(height: 20),
+
       GestureDetector(
         onTap:(){
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Forgot_pass()));
@@ -90,7 +93,10 @@ class _SigninState extends State<Signin> {
             ),),
           ),
         ),
-      ),]
+      ),
+    ]
     )
-        ));}
+        )
+    );
+  }
 }

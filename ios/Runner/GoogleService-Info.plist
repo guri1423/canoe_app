@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1064605653341-7d3ggollb9sotq9lvigjigq7vhrq0jh4.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1064605653341-7d3ggollb9sotq9lvigjigq7vhrq0jh4</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBe2genE8yxGawARwlcE-zyeR458uXidCg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1064605653341</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.canoeApp</string>
+	<key>PROJECT_ID</key>
+	<string>canoe-app-751af</string>
+	<key>STORAGE_BUCKET</key>
+	<string>canoe-app-751af.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1064605653341:ios:f86e77bfa029825788b0b4</string>
+</dict>
+</plist>
