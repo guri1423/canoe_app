@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'Duties_Screen.dart';
 
 class Logout extends StatefulWidget {
-  const Logout({Key? key}) : super(key: key);
+  const Logout(BuildContext context, {Key? key}) : super(key: key);
 
   @override
   State<Logout> createState() => _LogoutState();

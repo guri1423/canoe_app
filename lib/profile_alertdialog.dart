@@ -1,3 +1,4 @@
+
 import 'package:canoe_app/ContactUs_Screen.dart';
 import 'package:canoe_app/Delete_account.dart';
 import 'package:canoe_app/Duty_history.dart';
@@ -5,6 +6,7 @@ import 'package:canoe_app/Edit_profile.dart';
 import 'package:canoe_app/Logout.dart';
 import 'package:flutter/material.dart';
 
+import 'Chat_Screen.dart';
 import 'Duties_Screen.dart';
 
 List<String>_text=[
@@ -26,7 +28,6 @@ List<Widget>_widget=[
   DutyHistory(),
   ContactUs(),
   DeleteAccount(),
-  Logout(),
 
 
 ];

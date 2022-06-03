@@ -1,10 +1,13 @@
+import 'package:canoe_app/Authentication/Auth.dart';
 import 'package:canoe_app/welcome_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp().then((value) => print(value));
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -15,13 +18,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
 
-        primarySwatch: Colors.blue,
-      ),
-      home: WelcomeScreen(),
-    );
+            primarySwatch: Colors.blue,
+          ),
+          home: AuthenticationWrapper(),
+        );
+  }
+}
+
+
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WelcomeScreen();
   }
 }

@@ -36,7 +36,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
   Future<Uint8List> getMarker() async {
     ByteData byteData = await DefaultAssetBundle.of(context).load(
-        "assets/boat_icon.png");
+        "images/car_icon.png");
     return byteData.buffer.asUint8List();
   }
 
@@ -53,7 +53,7 @@ class _LocationScreenState extends State<LocationScreen> {
           anchor: Offset(0.5, 0.5),
           icon: BitmapDescriptor.fromBytes(imageData));
       circle = Circle(
-          circleId: CircleId("boat"),
+          circleId: CircleId("car"),
           radius: newLocalData.accuracy!,
           zIndex: 1,
           strokeColor: Colors.blue,
@@ -149,6 +149,4 @@ class _LocationScreenState extends State<LocationScreen> {
 
     );
   }
-
-
 }

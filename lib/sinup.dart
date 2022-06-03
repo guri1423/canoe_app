@@ -1,14 +1,43 @@
 import 'package:canoe_app/signin.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+   SignUp({Key? key}) : super(key: key);
+
+
 
   @override
   State<SignUp> createState() => _SignUpState();
 }
 
 class _SignUpState extends State<SignUp> {
+
+  final TextEditingController _emailController=TextEditingController();
+  final TextEditingController _userController=TextEditingController();
+  final TextEditingController _passController=TextEditingController();
+
+  final FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
+
+  registration(BuildContext context)async{
+    print(_emailController.text);
+    print(_passController.text);
+    print(_userController.text);
+
+    await _firebaseAuth.createUserWithEmailAndPassword(email:_emailController.text , password:_passController.text).then((value) =>
+        FirebaseFirestore.instance.collection('Users').doc(value.user!.uid)
+            .set({ 'userid': value.user!.uid, 'UserName': _userController.text })).then((value)
+    {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>Signin()));
+    } );
+  }
+
+  printD(){
+    print("done");
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +56,11 @@ class _SignUpState extends State<SignUp> {
                 child: Image.asset('images/image15.png'),
               ),
             ),
+
+
             TextField(
+              controller: _userController,
+
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(12),
                 border: OutlineInputBorder(
@@ -41,6 +74,7 @@ class _SignUpState extends State<SignUp> {
             ),
           SizedBox(height: 20),
           TextField(
+            controller: _emailController,
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.all(12),
               border: OutlineInputBorder(
@@ -55,6 +89,8 @@ class _SignUpState extends State<SignUp> {
           ),
             SizedBox(height: 20),
             TextField(
+              controller: _passController,
+
               obscureText: true,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(12),
@@ -69,9 +105,11 @@ class _SignUpState extends State<SignUp> {
               ),
             ),
             SizedBox(height: 70),
+
             GestureDetector(
               onTap:(){
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Signin()));
+                registration(context);
+                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Signin()));
               },
               child: Container(
                 decoration: BoxDecoration(
