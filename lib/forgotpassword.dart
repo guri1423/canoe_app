@@ -33,7 +33,7 @@ class _Forgot_passState extends State<Forgot_pass> {
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0)
                         ),
-                        hintText: 'Enter Your Email',
+                        hintText: 'Enter Your Registered Email',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         )

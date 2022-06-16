@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:canoe_app/signin.dart';
+import 'package:canoe_app/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SignUp extends StatefulWidget {
    SignUp({Key? key}) : super(key: key);
@@ -36,6 +40,24 @@ class _SignUpState extends State<SignUp> {
   printD(){
     print("done");
   }
+  File? _image;
+
+  getImage() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = File(image!.path);
+
+    });
+  }
+  // if (image ==null) return;
+  // final imageTemporary = File(image!.path);
+  getImage1() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+    setState(() {
+      _image = File(image!.path);
+
+    });
+  }
 
 
   @override
@@ -43,95 +65,232 @@ class _SignUpState extends State<SignUp> {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 24,vertical: 100),
-        child: Column(
-          children: [
-            Text('SignUp',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold
-            )),
-            Padding(
-              padding: const EdgeInsets.all(40.0),
-              child: Container(
-                child: Image.asset('images/image15.png'),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, bottom: 20),
+                    child: GestureDetector( onTap: (){
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => WelcomeScreen()));
+                    },
+
+                        child: Icon(Icons.arrow_back_ios)),
+                  ),
+                ],
               ),
-            ),
-
-
-            TextField(
-              controller: _userController,
-
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(12),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0)
+              Text('SIGN UP',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold
+              )),
+              Padding(
+                padding: const EdgeInsets.all(40.0),
+                child: Container(
+                  child: Image.asset('images/image15.png'),
                 ),
-                hintText: 'Enter Your Name',
-                hintStyle: TextStyle(
-                  color: Colors.grey,
-                )
               ),
-            ),
-          SizedBox(height: 20),
-          TextField(
-            controller: _emailController,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(12),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0)
-              ),
-              hintText: 'Enter Your Email',
-              hintStyle: TextStyle(
-                color: Colors.grey
-              )
-            ),
 
-          ),
+              GestureDetector(onTap: (){
+                showDialog(context: context,
+                    builder:(BuildContext context){
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Container(
+                          height: 200,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: GestureDetector(
+                                    onTap:()=>Navigator.pop(context),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xffd72027),
+                                                shape: BoxShape.circle,
+
+                                              ),
+                                              child: Icon(Icons.close,color: Colors.white,size: 15,),
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 5),
+                                          child: Container(
+                                            width: 289,
+                                            height: 45,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(4),
+                                              color: Color(0xff9c037f),
+                                            ),
+                                            child: Center(
+                                              child: GestureDetector(onTap: (){
+                                                getImage();
+                                                Navigator.pop(context);
+                                              },
+                                                child: Text(
+                                                  "Import from gallery",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    fontFamily: "Lato",
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 5),
+                                          child: Container(
+                                            width: 289,
+                                            height: 45,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(4),
+                                              color: Color(0xff9c037f),
+                                            ),
+                                            child: Center(
+                                              child: GestureDetector(onTap: (){
+                                                getImage1();
+                                                Navigator.pop(context);
+                                              },
+                                                child: Text(
+                                                  "Import from Camera",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    fontFamily: "Lato",
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                SizedBox(height: 20,),
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                );
+
+              },
+                child: Container(child:
+                _image !=null ? CircleAvatar( radius: 50,backgroundImage: FileImage(_image!) ,): Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircleAvatar(radius: 50,),
+                    Icon(Icons.add_a_photo_outlined
+                      ,
+                      color: Colors.white,),
+                  ],
+                )
+                ),
+              ),
+
+              SizedBox(height: 30,),
+
+
+              TextField(
+                controller: _userController,
+
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                  ),
+                  hintText: 'Enter Full Name',
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                  )
+                ),
+              ),
             SizedBox(height: 20),
             TextField(
-              controller: _passController,
-
-              obscureText: true,
+              controller: _emailController,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(12),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0)
                 ),
-                hintText: 'Enter Your Password',
-                suffixIcon: Icon(Icons.visibility),
+                hintText: 'Enter Email',
                 hintStyle: TextStyle(
                   color: Colors.grey
                 )
               ),
-            ),
-            SizedBox(height: 70),
 
-            GestureDetector(
-              onTap:(){
-                registration(context);
-                // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Signin()));
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(30)
-                ),
-                height: 50,
-                alignment: Alignment.center,
-                width:MediaQuery.of(context).size.width,
-                child: Center(
-                  child: Text('Sign Up', style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),),
+            ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _passController,
+
+                obscureText: true,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0)
+                  ),
+                  hintText: 'Enter Password',
+                  suffixIcon: Icon(Icons.visibility),
+                  hintStyle: TextStyle(
+                    color: Colors.grey
+                  )
                 ),
               ),
-            ),
+              SizedBox(height: 70),
+
+              GestureDetector(
+                onTap:(){
+                  registration(context);
+                  // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Signin()));
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xffd72027),
+                    borderRadius: BorderRadius.circular(30)
+                  ),
+                  height: 50,
+                  alignment: Alignment.center,
+                  width:MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Text('Sign Up', style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),),
+                  ),
+                ),
+              ),
 
 
-          ],
+            ],
 
 
+          ),
         ),
       ),
     );

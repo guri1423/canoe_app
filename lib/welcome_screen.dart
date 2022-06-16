@@ -127,20 +127,20 @@ class _WelcomeScreenState extends State<WelcomeScreen>with SingleTickerProviderS
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Text(
-                      "Lorem Ipsum is simply dummy text\nof the printing and typesetting  text\nindustry.  since the 1500s,",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xff2d2d2d),
-                        fontSize: 18,
-                        fontFamily: "Lato",
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20,),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 20),
+                  //   child: Text(
+                  //     "Lorem Ipsum is simply dummy text\nof the printing and typesetting  text\nindustry.  since the 1500s,",
+                  //     textAlign: TextAlign.center,
+                  //     style: TextStyle(
+                  //       color: Color(0xff2d2d2d),
+                  //       fontSize: 18,
+                  //       fontFamily: "Lato",
+                  //       fontWeight: FontWeight.w300,
+                  //     ),
+                  //   ),
+                  // ),
+                  SizedBox(height: 80,),
                   buttons(context),
                   SizedBox(height: 100,),
 
@@ -195,7 +195,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>with SingleTickerProviderS
             height: 44,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(41),
-              color: Colors.black,
+              color: Color(0xffd72027),
             ),
             child: Center(
               child: Text(
