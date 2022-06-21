@@ -72,7 +72,7 @@ class _SignUpState extends State<SignUp> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 10, bottom: 20),
+                    padding: const EdgeInsets.only(left: 10),
                     child: GestureDetector( onTap: (){
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) => WelcomeScreen()));
@@ -88,7 +88,7 @@ class _SignUpState extends State<SignUp> {
                 fontWeight: FontWeight.bold
               )),
               Padding(
-                padding: const EdgeInsets.all(40.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Container(
                   child: Image.asset('images/image15.png'),
                 ),
@@ -230,7 +230,7 @@ class _SignUpState extends State<SignUp> {
                   )
                 ),
               ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
@@ -245,7 +245,7 @@ class _SignUpState extends State<SignUp> {
               ),
 
             ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               TextField(
                 controller: _passController,
 
@@ -262,7 +262,7 @@ class _SignUpState extends State<SignUp> {
                   )
                 ),
               ),
-              SizedBox(height: 70),
+              SizedBox(height: 30),
 
               GestureDetector(
                 onTap:(){

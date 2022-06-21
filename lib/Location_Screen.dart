@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:canoe_app/Services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' ;
+
+import 'modal/location_modal.dart';
 
 
 
@@ -91,6 +94,7 @@ class _LocationScreenState extends State<LocationScreen> {
     }
   }
 
+
   @override
   void dispose() {
     if (_locationSubscription != null) {
@@ -122,30 +126,46 @@ class _LocationScreenState extends State<LocationScreen> {
 
 
   @override
-  void initState() {
-    super.initState();
-  }
+
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
+  late Future<List<LocationModal>> _future;
   @override
+
+  void initState() {
+    _future=fetchLocation();
+    super.initState();
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
-      body: Stack(
-        children: [
-          GoogleMap(
-            mapType: MapType.hybrid,
-            initialCameraPosition: initialLocation,
-            markers: Set.of((marker != null) ? [marker!] : []),
-            circles: Set.of((circle != null) ? [circle!] : []),
-            onMapCreated: (GoogleMapController controller) {
-              _controller = controller;
-            },
-          ),
-        ],
-      ),
+      body: FutureBuilder<List<LocationModal>>(future: _future,
+        builder: (context,snapshot){
+          if (snapshot.hasData) {
+            return Stack(
+              children: [
+                GoogleMap(
+                  mapType: MapType.hybrid,
+                  initialCameraPosition: initialLocation,
+                  markers: Set.of((marker != null) ? [marker!] : []),
+                  circles: Set.of((circle != null) ? [circle!] : []),
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller = controller;
+                  },
+                ),
+              ],
+            );
+          }
+          else if(snapshot.hasError){
+            return Center(child: Text(
+                "${snapshot.error}"
+            ),
+            );
+          }
+          return Center(child: CircularProgressIndicator(),);
+        },
+      )
 
     );
   }
