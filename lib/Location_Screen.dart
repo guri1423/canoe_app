@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' ;
-
+import 'package:http/http.dart' as http;
 import 'modal/location_modal.dart';
-
+import 'dart:convert';
 
 
 
@@ -19,7 +19,7 @@ class LocationScreen extends StatefulWidget {
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
-
+var DetailData=[];
 class _LocationScreenState extends State<LocationScreen> {
 
   late GoogleMapController _controller;
@@ -124,19 +124,54 @@ class _LocationScreenState extends State<LocationScreen> {
     });
   }
 
+  fetchLocation() async{
+    var url = Uri.parse("https://4436-2401-4900-55b1-4260-a8f1-56a9-bcfd-91d9.in.ngrok.io/LatLong/:Email");
+    http.Response response;
+    response = await http.get(url);
+    print(response.body);
+    if(response.statusCode==200){
+      var  jsonResponse= await json.decode(response.body);
+      print(jsonResponse);
+      DetailData=jsonResponse;
 
-  @override
+
+    }else{
+      DetailData=[];
+      throw Exception("error");
+    }
+
+
+  }
+
+
 
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   late Future<List<LocationModal>> _future;
+  List markerList=[];
+  
+
   @override
 
   void initState() {
-    _future=fetchLocation();
+    markerList.add(fetchLocation());
     super.initState();
   }
+
+  @override
+
   Widget build(BuildContext context) {
+    List<Marker>markersList =[
+      Marker(markerId: MarkerId(DetailData[0]["_id"]),
+          position: LatLng(double.tryParse(DetailData[0]["Latitude"])!,double.tryParse(DetailData[0]["Longitude"])!)),
+      Marker(markerId: MarkerId(DetailData[1]["_id"]),
+          position: LatLng(double.tryParse(DetailData[1]["Latitude"])!,double.tryParse(DetailData[1]["Longitude"])!)),
+      Marker(markerId: MarkerId(DetailData[2]["_id"]),
+          position: LatLng(double.tryParse(DetailData[2]["Latitude"])!,double.tryParse(DetailData[2]["Longitude"])!)),
+      Marker(markerId: MarkerId(DetailData[3]["_id"]),
+          position: LatLng(double.tryParse(DetailData[3]["Latitude"])!,double.tryParse(DetailData[3]["Longitude"])!))
+
+    ];
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
@@ -148,7 +183,9 @@ class _LocationScreenState extends State<LocationScreen> {
                 GoogleMap(
                   mapType: MapType.hybrid,
                   initialCameraPosition: initialLocation,
-                  markers: Set.of((marker != null) ? [marker!] : []),
+                  markers: Set.of((marker != null) ?Set<Marker>.of(markersList) : [
+
+                  ]),
                   circles: Set.of((circle != null) ? [circle!] : []),
                   onMapCreated: (GoogleMapController controller) {
                     _controller = controller;

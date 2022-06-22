@@ -23,7 +23,7 @@ Future<List<AlertModal>> fetchAlert( )async{
 
 }
 
-Future<List<LocationModal>> fetchLocation() async{
+Future<List> fetchLocation() async{
   var url = Uri.parse("https://4436-2401-4900-55b1-4260-a8f1-56a9-bcfd-91d9.in.ngrok.io/LatLong/:Email");
   http.Response response;
   response = await http.get(url);
@@ -31,7 +31,7 @@ Future<List<LocationModal>> fetchLocation() async{
   if(response.statusCode==200){
     var  jsonResponse= await json.decode(response.body);
     print(jsonResponse);
-    return jsonResponse.map((data) =>  LocationModal.fromJson(data));
+    return jsonResponse;
 
   }else{
     throw Exception("error");
