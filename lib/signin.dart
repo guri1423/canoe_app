@@ -1,4 +1,5 @@
 import 'package:canoe_app/home.dart';
+import 'package:canoe_app/modal/login_modal.dart';
 import 'package:canoe_app/welcome_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,6 +48,13 @@ class _SigninState extends State<Signin> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('username', username);
   }
+  late LoginRequestModel requestModel;
+  @override
+  void inistate(){
+    requestModel = new LoginRequestModel(email: "", password: "");
+
+  }
+
 
 
   @override

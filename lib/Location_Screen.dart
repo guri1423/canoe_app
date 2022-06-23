@@ -154,7 +154,7 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
 
   void initState() {
-    markerList.add(fetchLocation());
+    fetchLocation();
     super.initState();
   }
 
@@ -178,6 +178,11 @@ class _LocationScreenState extends State<LocationScreen> {
       body: Stack(
         children: [
           GoogleMap(
+            zoomGesturesEnabled: true,
+            tiltGesturesEnabled: false,
+            onCameraMove:(CameraPosition cameraPosition){
+              print(cameraPosition.zoom);
+            },
             zoomControlsEnabled: true,
             mapType: MapType.hybrid,
             initialCameraPosition: initialLocation,
