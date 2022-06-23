@@ -8,14 +8,14 @@ import 'package:http/http.dart' as http;
 import '../modal/alert_modal.dart';
 
 Future<List<AlertModal>> fetchAlert( )async{
-  var url = Uri.parse("https://27e3-2401-4900-1bc3-5ca8-1c8c-204e-f289-f54a.in.ngrok.io/AlertShow");
+  var url = Uri.parse("https://e6c7-2401-4900-51ff-f714-508b-8d2f-bae-fe0.in.ngrok.io/ALertShow");
   http.Response response;
     response = await http.get(url);
-  print(response.body);
   if(response.statusCode==200){
     var  jsonResponse= await json.decode(response.body);
- print(jsonResponse);
-    return jsonResponse.map((data) =>  AlertModal.fromJson(data));
+  print(jsonResponse);
+  List DetailData=jsonResponse;
+    return DetailData.map((data) =>  AlertModal.fromJson(data)).toList();
 
   }else{
     throw Exception("error");

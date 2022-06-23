@@ -76,7 +76,7 @@ class _AlertScreenState extends State<AlertScreen> {
                     thickness: 0.5,
                     color: Color(0xff6f6f6f) ,
                   ),
-                  itemCount: 4,
+                  itemCount:snapshot.data!.length,
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context,index){
@@ -88,12 +88,13 @@ class _AlertScreenState extends State<AlertScreen> {
                           Container(
                             height: 30,
                             width: 10,
-                            decoration: BoxDecoration(
+                            decoration:  BoxDecoration(
                                 color:Color(0xffd72027),
                                 shape: BoxShape.circle
                             ),
                           ),
                           SizedBox(width: 20,),
+                          Text(snapshot.data![index].message)
 
                         ],
                       ),

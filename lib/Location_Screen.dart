@@ -125,14 +125,14 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   fetchLocation() async{
-    var url = Uri.parse("https://4436-2401-4900-55b1-4260-a8f1-56a9-bcfd-91d9.in.ngrok.io/LatLong/:Email");
+    var url = Uri.parse("https://e6c7-2401-4900-51ff-f714-508b-8d2f-bae-fe0.in.ngrok.io/LatLong");
     http.Response response;
     response = await http.get(url);
-    print(response.body);
     if(response.statusCode==200){
       var  jsonResponse= await json.decode(response.body);
-      print(jsonResponse);
+      // print(jsonResponse);
       DetailData=jsonResponse;
+
 
 
     }else{
@@ -175,33 +175,20 @@ class _LocationScreenState extends State<LocationScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
-      body: FutureBuilder<List<LocationModal>>(future: _future,
-        builder: (context,snapshot){
-          if (snapshot.hasData) {
-            return Stack(
-              children: [
-                GoogleMap(
-                  mapType: MapType.hybrid,
-                  initialCameraPosition: initialLocation,
-                  markers: Set.of((marker != null) ?Set<Marker>.of(markersList) : [
-
-                  ]),
-                  circles: Set.of((circle != null) ? [circle!] : []),
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller = controller;
-                  },
-                ),
-              ],
-            );
-          }
-          else if(snapshot.hasError){
-            return Center(child: Text(
-                "${snapshot.error}"
-            ),
-            );
-          }
-          return Center(child: CircularProgressIndicator(),);
-        },
+      body: Stack(
+        children: [
+          GoogleMap(
+            zoomControlsEnabled: true,
+            mapType: MapType.hybrid,
+            initialCameraPosition: initialLocation,
+            markers: Set.of((marker != null) ?Set<Marker>.of(markersList) : [
+            ]),
+            circles: Set.of((circle != null) ? [circle!] : []),
+            onMapCreated: (GoogleMapController controller) {
+              _controller = controller;
+            },
+          ),
+        ],
       )
 
     );
