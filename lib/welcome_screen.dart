@@ -34,8 +34,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>with SingleTickerProviderS
   }
   @override
   Widget build(BuildContext context) {
-    // Future.delayed(Duration(milliseconds: 200),()=>animationController.forward());
-    // Future.delayed(Duration(milliseconds: 2000),()=>showscreen(context));
+    Future.delayed(Duration(milliseconds: 200),()=>animationController.forward());
+    Future.delayed(Duration(milliseconds: 2000),()=>showscreen(context));
     return Scaffold(
         backgroundColor:Colors.white,
         body:Stack(
