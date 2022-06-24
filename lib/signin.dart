@@ -1,3 +1,4 @@
+import 'package:canoe_app/Services/api_services.dart';
 import 'package:canoe_app/home.dart';
 import 'package:canoe_app/modal/login_modal.dart';
 import 'package:canoe_app/welcome_screen.dart';
@@ -38,6 +39,7 @@ class _SigninState extends State<Signin> {
     });
     print(searchSnapshot!.docs[0]["UserName"]);
     addUserNameToSF(searchSnapshot!.docs[0]["UserName"]);
+    await login(LoginRequestModel(email: _emailController.text, password: _passController.text));
     Navigator.push(context, MaterialPageRoute(builder: (context)=>
     Home()));
 
