@@ -46,17 +46,15 @@ Future<List> fetchLocation() async{
 
 
 
-class APIService {
-  Future<LoginResponseModel> login(LoginRequestModel requestModel) async {
-    String url = "https://e6c7-2401-4900-51ff-f714-508b-8d2f-bae-fe0.in.ngrok.io/user/login";
+Future<LoginResponseModel> login(LoginRequestModel requestModel) async {
+  String url = "https://e6c7-2401-4900-51ff-f714-508b-8d2f-bae-fe0.in.ngrok.io/user/login";
 
-    final response = await http.post(Uri.parse(""), body: requestModel.toJson());
-    if (response.statusCode == 200 || response.statusCode == 400) {
-      return LoginResponseModel.fromJson(
-        json.decode(response.body),
-      );
-    } else {
-      throw Exception('Failed to load data!');
-    }
+  final response = await http.post(Uri.parse(url), body: requestModel.toJson());
+  if (response.statusCode == 200 || response.statusCode == 400) {
+    return LoginResponseModel.fromJson(
+      json.decode(response.body),
+    );
+  } else {
+    throw Exception('Failed to load data!');
   }
 }
