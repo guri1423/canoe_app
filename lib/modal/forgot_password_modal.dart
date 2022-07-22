@@ -1,19 +1,17 @@
+import 'dart:convert';
 
 
-
-class LoginRequestModal{
+class ForgotPasswordModal{
 
 
   //constructor
-  LoginRequestModal({
+  ForgotPasswordModal({
     this.email,
-    this.password,
 
 
   });
 
   String? email;
-  String? password;
 
 
   // factory Register.fromJson(Map<String, dynamic>json) => Register();
@@ -21,7 +19,6 @@ class LoginRequestModal{
   Map<String, dynamic> toJson() => {
 
     "email": email,
-    "password": password,
 
 
 

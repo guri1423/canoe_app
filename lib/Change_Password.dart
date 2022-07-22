@@ -1,8 +1,10 @@
-import 'package:canoe_app/home.dart';
+
+import 'package:canoe_app/Services/api_services.dart';
+import 'package:canoe_app/modal/create_new_password.dart';
 import 'package:canoe_app/signin.dart';
 import 'package:flutter/material.dart';
 
-import 'forgotpassword.dart';
+
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({Key? key}) : super(key: key);
@@ -11,7 +13,24 @@ class ChangePassword extends StatefulWidget {
   State<ChangePassword> createState() => _ChangePasswordState();
 }
 
+
 class _ChangePasswordState extends State<ChangePassword> {
+  final TextEditingController _emailController=TextEditingController();
+  final TextEditingController _passwordController=TextEditingController();
+  final TextEditingController _confirmpasswordController=TextEditingController();
+  bool _showPassword = false;
+
+  changePassword(CreateNewPasswordModal modal) async{
+    bool? status = await newPassword(modal);
+    if(status!){ print("Password changed");
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> Signin()));
+
+    }
+    else{
+      print("try again");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,13 +50,15 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
                   ),
                   TextField(
+                    controller: _emailController,
+
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(12),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0)
                         ),
-                        hintText: 'New Password',
-                        suffixIcon: Icon(Icons.visibility),
+                        hintText: 'Enter email',
+
                         hintStyle: TextStyle(
                           color: Colors.grey,
                         )
@@ -45,13 +66,40 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   SizedBox(height: 20),
                   TextField(
+                    controller: _passwordController,
+                    obscureText: _showPassword,
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(12),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0)
+                        ),
+                        hintText: 'New Password',
+                        
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                        )
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: _confirmpasswordController,
+                    obscureText: _showPassword,
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(12),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0)
                         ),
                         hintText: 'Confirm Password',
-                        suffixIcon: Icon(Icons.visibility),
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _showPassword = !_showPassword;
+                            });
+                          },
+                          child: Icon(
+                            _showPassword ? Icons.visibility : Icons.visibility_off,
+                          ),
+                        ),
                         hintStyle: TextStyle(
                             color: Colors.grey
                         )
@@ -63,7 +111,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                   SizedBox(height: 30),
                   GestureDetector(
                     onTap:(){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Signin()));
+                      changePassword(CreateNewPasswordModal(
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                        confirmpassword: _confirmpasswordController.text
+                      ));
                     },
                     child: Container(
                       decoration: BoxDecoration(

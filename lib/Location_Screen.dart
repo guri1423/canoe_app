@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' ;
-import 'package:http/http.dart' as http;
+
 import 'modal/location_modal.dart';
-import 'dart:convert';
+
 
 
 
@@ -43,74 +43,74 @@ class _LocationScreenState extends State<LocationScreen> {
     return byteData.buffer.asUint8List();
   }
 
-  void updateMarkerAndCircle(LocationData newLocalData, Uint8List imageData) {
-    LatLng latlng = LatLng(newLocalData.latitude!, newLocalData.longitude!);
-    setState(() {
-      marker = Marker(
-          markerId: MarkerId("home"),
-          position: latlng,
-          rotation: newLocalData.heading!,
-          draggable: false,
-          zIndex: 2,
-          flat: true,
-          anchor: Offset(0.5, 0.5),
-          icon: BitmapDescriptor.fromBytes(imageData));
-      circle = Circle(
-          circleId: CircleId("car"),
-          radius: newLocalData.accuracy!,
-          zIndex: 1,
-          strokeColor: Colors.blue,
-          center: latlng,
-          fillColor: Colors.blue.withAlpha(70));
-    });
-  }
+  // void updateMarkerAndCircle(LocationData newLocalData, Uint8List imageData) {
+  //   LatLng latlng = LatLng(newLocalData.latitude!, newLocalData.longitude!);
+  //   setState(() {
+  //     marker = Marker(
+  //         markerId: MarkerId("home"),
+  //         position: latlng,
+  //         rotation: newLocalData.heading!,
+  //         draggable: false,
+  //         zIndex: 2,
+  //         flat: true,
+  //         anchor: Offset(0.5, 0.5),
+  //         icon: BitmapDescriptor.fromBytes(imageData));
+  //     circle = Circle(
+  //         circleId: CircleId("car"),
+  //         radius: newLocalData.accuracy!,
+  //         zIndex: 1,
+  //         strokeColor: Colors.blue,
+  //         center: latlng,
+  //         fillColor: Colors.blue.withAlpha(70));
+  //   });
+  // }
 
-  void getCurrentLocation() async {
-    try {
-      Uint8List imageData = await getMarker();
-      var location = await _locationTracker.getLocation();
-
-      updateMarkerAndCircle(location, imageData);
-
-      if (_locationSubscription != null) {
-        _locationSubscription!.cancel();
-      }
-
-      _locationSubscription =
-          _locationTracker.onLocationChanged.listen((newLocalData) {
-            _controller.animateCamera(
-                CameraUpdate.newCameraPosition(CameraPosition(
-                    bearing: 192.8334901395799,
-                    target: LatLng(
-                        newLocalData.latitude!, newLocalData.longitude!),
-                    tilt: 0,
-                    zoom: 18.00)));
-            updateMarkerAndCircle(newLocalData, imageData);
-          });
-    } on PlatformException catch (e) {
-      if (e.code == 'PERMISSION_DENIED') {
-        debugPrint("Permission Denied");
-      }
-    }
-  }
+  // void getCurrentLocation() async {
+  //   try {
+  //     Uint8List imageData = await getMarker();
+  //     var location = await _locationTracker.getLocation();
+  //
+  //     updateMarkerAndCircle(location, imageData);
+  //
+  //     if (_locationSubscription != null) {
+  //       _locationSubscription!.cancel();
+  //     }
+  //
+  //     _locationSubscription =
+  //         _locationTracker.onLocationChanged.listen((newLocalData) {
+  //           _controller.animateCamera(
+  //               CameraUpdate.newCameraPosition(CameraPosition(
+  //                   bearing: 192.8334901395799,
+  //                   target: LatLng(
+  //                       newLocalData.latitude!, newLocalData.longitude!),
+  //                   tilt: 0,
+  //                   zoom: 18.00)));
+  //           updateMarkerAndCircle(newLocalData, imageData);
+  //         });
+  //   } on PlatformException catch (e) {
+  //     if (e.code == 'PERMISSION_DENIED') {
+  //       debugPrint("Permission Denied");
+  //     }
+  //   }
+  // }
 
 
   @override
-  void dispose() {
-    if (_locationSubscription != null) {
-      _locationSubscription!.cancel();
-    }
+  // void dispose() {
+  //   if (_locationSubscription != null) {
+  //     _locationSubscription!.cancel();
+  //   }
+  //
+  //   super.dispose();
+  // }
 
-    super.dispose();
-  }
-
-  stop() {
-    if (_locationSubscription != null) {
-      setState(() {
-        _locationSubscription = null;
-      });
-    }
-  }
+  // stop() {
+  //   if (_locationSubscription != null) {
+  //     setState(() {
+  //       _locationSubscription = null;
+  //     });
+  //   }
+  // }
 
 
   int selectindex = 0;
@@ -124,24 +124,7 @@ class _LocationScreenState extends State<LocationScreen> {
     });
   }
 
-  fetchLocation() async{
-    var url = Uri.parse("https://e6c7-2401-4900-51ff-f714-508b-8d2f-bae-fe0.in.ngrok.io/LatLong");
-    http.Response response;
-    response = await http.get(url);
-    if(response.statusCode==200){
-      var  jsonResponse= await json.decode(response.body);
-      // print(jsonResponse);
-      DetailData=jsonResponse;
 
-
-
-    }else{
-      DetailData=[];
-      throw Exception("error");
-    }
-
-
-  }
 
 
 
@@ -161,17 +144,17 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
 
   Widget build(BuildContext context) {
-    List<Marker>markersList =[
-      Marker(markerId: MarkerId(DetailData[0]["_id"]),
-          position: LatLng(double.tryParse(DetailData[0]["Latitude"])!,double.tryParse(DetailData[0]["Longitude"])!)),
-      Marker(markerId: MarkerId(DetailData[1]["_id"]),
-          position: LatLng(double.tryParse(DetailData[1]["Latitude"])!,double.tryParse(DetailData[1]["Longitude"])!)),
-      Marker(markerId: MarkerId(DetailData[2]["_id"]),
-          position: LatLng(double.tryParse(DetailData[2]["Latitude"])!,double.tryParse(DetailData[2]["Longitude"])!)),
-      Marker(markerId: MarkerId(DetailData[3]["_id"]),
-          position: LatLng(double.tryParse(DetailData[3]["Latitude"])!,double.tryParse(DetailData[3]["Longitude"])!))
-
-    ];
+    // List<Marker>markersList =[
+    //   Marker(markerId: MarkerId(DetailData[0]["_id"]),
+    //       position: LatLng(double.tryParse(DetailData[0]["Latitude"])!,double.tryParse(DetailData[0]["Longitude"])!)),
+    //   Marker(markerId: MarkerId(DetailData[1]["_id"]),
+    //       position: LatLng(double.tryParse(DetailData[1]["Latitude"])!,double.tryParse(DetailData[1]["Longitude"])!)),
+    //   Marker(markerId: MarkerId(DetailData[2]["_id"]),
+    //       position: LatLng(double.tryParse(DetailData[2]["Latitude"])!,double.tryParse(DetailData[2]["Longitude"])!)),
+    //   Marker(markerId: MarkerId(DetailData[3]["_id"]),
+    //       position: LatLng(double.tryParse(DetailData[3]["Latitude"])!,double.tryParse(DetailData[3]["Longitude"])!))
+    //
+    // ];
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
@@ -186,8 +169,8 @@ class _LocationScreenState extends State<LocationScreen> {
             zoomControlsEnabled: true,
             mapType: MapType.hybrid,
             initialCameraPosition: initialLocation,
-            markers: Set.of((marker != null) ?Set<Marker>.of(markersList) : [
-            ]),
+            // markers: Set.of((marker != null) ?Set<Marker>.of(markersList) : [
+            // ]),
             circles: Set.of((circle != null) ? [circle!] : []),
             onMapCreated: (GoogleMapController controller) {
               _controller = controller;

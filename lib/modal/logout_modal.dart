@@ -1,11 +1,11 @@
+import 'dart:convert';
 
 
-
-class LoginRequestModal{
+class LogoutModal{
 
 
   //constructor
-  LoginRequestModal({
+  LogoutModal({
     this.email,
     this.password,
 

@@ -1,4 +1,6 @@
 
+
+
 import 'package:canoe_app/ContactUs_Screen.dart';
 import 'package:canoe_app/Delete_account.dart';
 import 'package:canoe_app/Duty_history.dart';
@@ -28,6 +30,7 @@ List<Widget>_widget=[
   DutyHistory(),
   ContactUs(),
   DeleteAccount(),
+
 
 
 ];

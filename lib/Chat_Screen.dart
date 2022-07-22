@@ -1,4 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'dart:async';
+
+import 'package:canoe_app/Services/api_services.dart';
+import 'package:canoe_app/Services/storage_services.dart';
+import 'package:canoe_app/modal/get_message_model.dart';
+import 'package:canoe_app/modal/message_modal.dart';
+import 'package:canoe_app/profile_alertdialog.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,44 +18,43 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
 
-  final  TextEditingController _controller=TextEditingController();
 
-  QuerySnapshot? searchSnapshot;
+  final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+  final TextEditingController _controller= TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final StorageServices _services = StorageServices();
 
+  String? userName;
 
-  sendMessage()async{
-    FirebaseFirestore.instance.collection('ChatRoom').doc(Timestamp.now().toString()).set({
-      "sendBy":name,
-      "message":_controller.text,
-      "createdOn":Timestamp.now().toString()
-    });
+goToBottom()async{
 
-  }
-  String ? name;
-  getStringValuesSF() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration:const Duration(milliseconds: 10),
+      curve: Curves.fastOutSlowIn);
+
+}
+
+getName()async{
+ await _services.getUserName().then((value) {
     setState(() {
-      name = prefs.getString('username');
+      userName = value!;
+      print(userName);
     });
-    print(name);
-
-  }
-
-  @override
-  void initState(){
-    getStringValuesSF();
-
-    FirebaseFirestore.instance.collection("ChatRoom").orderBy("time",descending: false).get().then((value) {
-      chatRoomStream=value as Stream;
-    });
-
+  });
+}
+@override
+  void initState() {
+  getName();
     super.initState();
   }
-  late Stream chatRoomStream;
-  @override
+
+
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -56,6 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
             children: [
               Text(
                 "Chat",
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   color: Color(0xff2d2d2d),
                   fontSize: 20,
@@ -64,10 +71,24 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
               Spacer(),
-              CircleAvatar(
-                radius: 20,
+              GestureDetector(
+                onTap: () {
+                  showDialog(context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: profiledialog(context),
+                        );
+                      });
+                },
+                child: CircleAvatar(
+                  radius: 20,
 
-              )
+                ),
+              ),
+
             ],
           ),
         ),
@@ -76,25 +97,101 @@ class _ChatScreenState extends State<ChatScreen> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("username:  "),
-                Text(name!)
-              ],
-            ),
+            StreamBuilder<dynamic>(
+              stream: getMessage(),
+                builder: (context,snapshot){
+                if(snapshot.hasData){
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height*0.60,
+                    width:  MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      // physics: NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data!.message.length,
+                        itemBuilder: (context,index){
+                        return userName == snapshot.data!.message[index].userName
+                            ?Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            SizedBox(height: 10,),
 
-            SizedBox(height: 10,),
-            chatRoomList(),
+
+                            SizedBox(height: 5,),
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              child: Text(snapshot.data!.message[index].message ?? "",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize:18,
+                              ),),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                    bottomRight: Radius.circular(20),
+                                  ),
+                                  border: Border.all(color: Colors.blue)
+                              ),),
+
+                          ],
+                        )
+                            :Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+
+                            SizedBox(height: 5,),
+                            Container(
+                              padding: EdgeInsets.all(8),child: Text(snapshot.data!.message[index].message ?? "",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                    bottomRight: Radius.circular(20),
+                                  ),
+                                  border: Border.all(color: Colors.purple)
+                              ),),
+                            Text(snapshot.data!.message[index].userName?? "",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),),
+
+                          ],
+                        );
+                        }),
+                  );
+                }else if(snapshot.hasError){
+                  return Center(
+                    child: Text("please try again later"),
+                  );
+                }
+
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height*0.60,
+                  width:  MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+                }),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: Row(
                 children: [
-                  Expanded(child: Container(
+                  Expanded(
+                      child: Container(
                     decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xffd72027)),
+                        border: Border.all(color: Colors.blue),
                         borderRadius: BorderRadius.circular(20)
                     ),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     child: TextField(
                       controller: _controller,
                       decoration: InputDecoration(
@@ -103,11 +200,17 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   )),
                   SizedBox(width: 5,),
-                  ElevatedButton(onPressed: (){
-                    // logOut();
-                    sendMessage();
+                  ElevatedButton(
+
+                      onPressed: ()async{
+                    await sendMessageUser(SendMessageModal(
+                      message: _controller.text,
+                    ));
                     _controller.clear();
-                  }, child:Text("Send")
+                   setState(() {
+                     getMessage();
+                   });
+                  }, child: Text("Send")
                   ),
                 ],
               ),
@@ -115,97 +218,6 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget chatRoomList(){
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection("ChatRoom").snapshots(),
-      builder: (context,snapshot){
-        return snapshot.hasData ?
-        Expanded(
-          child:ListView.builder(
-              itemCount: snapshot.data?.docs.length,
-              itemBuilder: (context,index){
-
-
-                return snapshot.data!.docs[index]["sendBy"]==name?Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                          padding: EdgeInsets.all(10),
-
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                                bottomLeft: Radius.circular(20),
-                              ),
-                            color:Color(0xffd72027),
-                          ),
-                          child: Text(snapshot.data!.docs[index]["message"],style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-
-                          ),))
-                    ],
-                  ),
-                ):Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                              padding: EdgeInsets.all(10),
-
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    topRight: Radius.circular(20),
-                                    bottomRight: Radius.circular(20),
-                                  ),
-                                color: Color(0xffefefef),
-                              ),
-                              child: Text(snapshot.data!.docs[index]["message"],style: TextStyle(
-                                color: Color(0xff2d2d2d),
-                                fontSize: 16,
-                              ),)),
-                          Text(snapshot.data!.docs[index]["sendBy"],style: TextStyle(
-                            color: Colors.blue.withOpacity(0.8),
-                          ),),
-                          // Text(snapshot.data!.docs[index]["createdOn"].toString()
-                          //     .replaceAll("Timestamp", "")
-                          //     .replaceAll("(", "")
-                          //     .replaceAll("seconds=", "")
-                          //     .replaceAll("nano", "")
-                          //     .replaceAll(")", ""))
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              }),
-        ):Container(
-          child:Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 200),
-              child: Text(
-                "No Chat Found!!",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

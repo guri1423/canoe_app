@@ -10,7 +10,7 @@ class Logout extends StatefulWidget {
 }
 
 class _LogoutState extends State<Logout> {
-  createAlertDialog(BuildContext context){
+  createAlertDialog( context){
     return showDialog(context: context, builder: (context){
       return AlertDialog(
         alignment: Alignment.center,

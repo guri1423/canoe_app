@@ -1,3 +1,6 @@
+import 'package:canoe_app/Change_Password.dart';
+import 'package:canoe_app/Services/api_services.dart';
+import 'package:canoe_app/modal/forgot_password_modal.dart';
 import 'package:canoe_app/otp.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +11,21 @@ class Forgot_pass extends StatefulWidget {
   State<Forgot_pass> createState() => _Forgot_passState();
 }
 
+
 class _Forgot_passState extends State<Forgot_pass> {
+
+  final TextEditingController _email = TextEditingController();
+
+  newPassword(ForgotPasswordModal modal) async{
+    bool? status = await userforgotpassword(modal);
+    if(status!){
+      print("user verified");
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> ChangePassword()));
+    }else{
+      print("try again later");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +45,7 @@ class _Forgot_passState extends State<Forgot_pass> {
                     ),
                   ),
                   TextField(
+                    controller: _email,
                     decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(12),
                         border: OutlineInputBorder(
@@ -42,7 +60,11 @@ class _Forgot_passState extends State<Forgot_pass> {
                   SizedBox(height: 30),
                   GestureDetector(
                     onTap:(){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Send_Code()));
+                      newPassword(ForgotPasswordModal(
+                        email: _email.text,
+                      ));
+
+
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -53,7 +75,7 @@ class _Forgot_passState extends State<Forgot_pass> {
                       alignment: Alignment.center,
                       width:MediaQuery.of(context).size.width,
                       child: Center(
-                        child: Text('Send a Code', style: TextStyle(
+                        child: Text('Submit', style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                         ),),

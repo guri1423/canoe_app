@@ -24,18 +24,24 @@ class _WelcomeScreenState extends State<WelcomeScreen>with SingleTickerProviderS
       parent: animationController,
       curve: Curves.easeIn,
     );
+    Future.delayed(Duration(milliseconds: 2000),()=>showscreen(context));
     super.initState();
   }
+
 
   @override
   void dispose() {
     animationController.dispose();
     super.dispose();
   }
+
+  showAnimation(){
+
+  }
+
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration(milliseconds: 200),()=>animationController.forward());
-    Future.delayed(Duration(milliseconds: 2000),()=>showscreen(context));
     return Scaffold(
         backgroundColor:Colors.white,
         body:Stack(

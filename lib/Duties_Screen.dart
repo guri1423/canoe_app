@@ -1,7 +1,12 @@
+import 'package:canoe_app/Services/api_services.dart';
 import 'package:canoe_app/home.dart';
+import 'package:canoe_app/modal/location_duties_model.dart';
+import 'package:canoe_app/modal/pending_duties.dart';
 import 'package:canoe_app/profile_alertdialog.dart';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 
 
 
@@ -21,6 +26,13 @@ class _DutiesScreenState extends State<DutiesScreen> {
   final List<bool> _selected = List.generate(15, (i) => false);
   final List<bool> _selected1 = List.generate(15, (i) => false);
   final List<bool> _selected2 = List.generate(15, (i) => false);
+
+
+
+  void initState() {
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,539 +87,667 @@ class _DutiesScreenState extends State<DutiesScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      "Pending duties : 100",
-                      style: TextStyle(
-                        color: Color(0xff2d2d2d),
-                        fontSize: 18,
-                        fontFamily: "Lato",
-                        fontWeight: FontWeight.w700,
-                      ),
+
+                    FutureBuilder<int?>(
+                      future: pendingDuties() ,
+                      builder: (context,snapshot){
+                        if(snapshot.hasData){
+                          return Text("Total Pending Duties: ${snapshot.data.toString()}",
+                            style: TextStyle(
+                              color: Color(0xff2d2d2d),
+                              fontSize: 18,
+                              fontFamily: "Lato",
+                              fontWeight: FontWeight.w700,
+                            ),);
+                        }
+                        if(snapshot.hasError){
+                          return
+                          Text(
+                          "Error" ,
+                          style: TextStyle(
+                            color: Color(0xff2d2d2d),
+                            fontSize: 18,
+                            fontFamily: "Lato",
+                            fontWeight: FontWeight.w700,
+                          ),
+                        );}
+                        return CircularProgressIndicator();
+
+                      },
+
+
                     ),
                   ],
                 ),
               ),
-              Theme(
-                data:  ThemeData().copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                  iconColor: Color(0xff6f6f6f),
-                  title: Row(
-                    children: [
-                      ImageIcon(AssetImage("images/pinicon.png"),color: Colors.green,),
-                      SizedBox(width: 15,),
-                      Text("Location1 ",
-                        style: TextStyle(
-                          color: Color(0xffd72027),
-                          fontSize: 22,
-                          fontFamily: "Lato",
-                          fontWeight: FontWeight.w600,
-                        ),),
-                      Icon(Icons.arrow_forward_outlined),
-                      SizedBox(width: 8,),
-                      Text("LocationA",
-                        style: TextStyle(
-                          color: Color(0xffd72027),
-                          fontSize: 22,
-                          fontFamily: "Lato",
-                          fontWeight: FontWeight.w600,
-                        ),),
-                    ],
-                  ),
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Color(0xff6f6f6f),
-                            width: 0.2
-                        ),
 
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              "Pending Duties : 6",
-                              style: TextStyle(
-                                color: Color(0xff4d4c4c),
-                                fontSize: 14,
-                                fontFamily: "Lato",
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    ),
-                    Row(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 130,
-                          width: MediaQuery.of(context).size.width-22,
-                          decoration: BoxDecoration(
-                              color: Color(0xfff3f3f3),
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(8),
-                                  bottomRight: Radius.circular(8)
-                              ),
-                              border: Border.all(
-                                  color:  Color(0xffa0a0a0),
-                                  width: 0.2
-                              )
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8,top: 10,bottom: 10),
-                            child: Column(
+              FutureBuilder(
+                future: locationPendingDuties(),
+                builder: (context,snapshot){
+                  if(snapshot.hasData){
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: 6,
+                      itemBuilder: (context,index){
+                        return Theme(
+                          data:  ThemeData().copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            iconColor: Color(0xff6f6f6f),
+                            title: Row(
                               children: [
-
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: ListView.builder(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: 5,
-                                      scrollDirection: Axis.horizontal,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context,index){
-                                        var num=index+1;
-                                        return GestureDetector(
-                                          onTap: (){
-                                            setState(() {
-                                              _selected[index]=! _selected[index];
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                                            child: Container(
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: Color(0xffb0b0b0),
-                                                ),
-                                                color: _selected[index] ? Color(0xffd72027) : null,
-                                              ),
-                                              child: Center(
-                                                child: Text(num.toString(),
-                                                  style: TextStyle(
-                                                    color: _selected[index] ? Colors.white: Color(0xffa0a0a0),
-                                                    fontSize: 18,
-                                                    fontFamily: "Lato",
-                                                    fontWeight: FontWeight.w600,
-                                                  ),),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                                Spacer(),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: ListView.builder(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: 5,
-                                      scrollDirection: Axis.horizontal,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context,index){
-                                        var num=index+6;
-                                        return GestureDetector(
-                                          onTap: (){
-                                            setState(() {
-                                              _selected[num]=! _selected[num];
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                                            child: Container(
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: Color(0xffb0b0b0),
-                                                ),
-                                                color: _selected[num] ? Color(0xffd72027) : null,
-                                              ),
-                                              child: Center(
-                                                child: Text(num.toString(),
-                                                  style: TextStyle(
-                                                    color: _selected[num] ? Colors.white: Color(0xffa0a0a0),
-                                                    fontSize: 18,
-                                                    fontFamily: "Lato",
-                                                    fontWeight: FontWeight.w600,
-                                                  ),),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                )
+                                ImageIcon(AssetImage("images/pinicon.png"),color: Colors.green,),
+                                SizedBox(width: 15,),
+                                Text("Location1 ",
+                                  style: TextStyle(
+                                    color: Color(0xffd72027),
+                                    fontSize: 22,
+                                    fontFamily: "Lato",
+                                    fontWeight: FontWeight.w600,
+                                  ),),
+                                // Icon(Icons.arrow_forward_outlined),
+                                // SizedBox(width: 8,),
+                                // Text("LocationB",
+                                //   style: TextStyle(
+                                //     color: Color(0xffd72027),
+                                //     fontSize: 22,
+                                //     fontFamily: "Lato",
+                                //     fontWeight: FontWeight.w600,
+                                //   ),),
                               ],
                             ),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 20,),
-              Theme(
-                data:  ThemeData().copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                  iconColor: Color(0xff6f6f6f),
-                  title: Row(
-                    children: [
-                      ImageIcon(AssetImage("images/pinicon.png"),color: Colors.green,),
-                      SizedBox(width: 15,),
-                      Text("Location1 ",
-                        style: TextStyle(
-                          color: Color(0xffd72027),
-                          fontSize: 22,
-                          fontFamily: "Lato",
-                          fontWeight: FontWeight.w600,
-                        ),),
-                      Icon(Icons.arrow_forward_outlined),
-                      SizedBox(width: 8,),
-                      Text("LocationB",
-                        style: TextStyle(
-                          color: Color(0xffd72027),
-                          fontSize: 22,
-                          fontFamily: "Lato",
-                          fontWeight: FontWeight.w600,
-                        ),),
-                    ],
-                  ),
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Color(0xff6f6f6f),
-                            width: 0.2
-                        ),
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Color(0xff6f6f6f),
+                                      width: 0.2
+                                  ),
 
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              "Pending Duties : 6",
-                              style: TextStyle(
-                                color: Color(0xff4d4c4c),
-                                fontSize: 14,
-                                fontFamily: "Lato",
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    ),
-                    Row(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 130,
-                          width: MediaQuery.of(context).size.width-22,
-                          decoration: BoxDecoration(
-                              color: Color(0xfff3f3f3),
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(8),
-                                  bottomRight: Radius.circular(8)
-                              ),
-                              border: Border.all(
-                                  color:  Color(0xffa0a0a0),
-                                  width: 0.2
-                              )
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8,top: 10,bottom: 10),
-                            child: Column(
-                              children: [
-
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: ListView.builder(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: 5,
-                                      scrollDirection: Axis.horizontal,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context,index){
-                                        var num=index+1;
-                                        return GestureDetector(
-                                          onTap: (){
-                                            setState(() {
-                                              _selected1[index]=! _selected1[index];
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                                            child: Container(
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: Color(0xffb0b0b0),
-                                                ),
-                                                color: _selected1[index] ? Color(0xffd72027) : null,
-                                              ),
-                                              child: Center(
-                                                child: Text(num.toString(),
-                                                  style: TextStyle(
-                                                    color: _selected1[index] ? Colors.white: Color(0xffa0a0a0),
-                                                    fontSize: 18,
-                                                    fontFamily: "Lato",
-                                                    fontWeight: FontWeight.w600,
-                                                  ),),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }),
                                 ),
-                                Spacer(),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: ListView.builder(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: 5,
-                                      scrollDirection: Axis.horizontal,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context,index){
-                                        var num=index+6;
-                                        return GestureDetector(
-                                          onTap: (){
-                                            setState(() {
-                                              _selected1[num]=! _selected1[num];
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                                            child: Container(
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: Color(0xffb0b0b0),
-                                                ),
-                                                color: _selected1[num] ? Color(0xffd72027) : null,
+                                child:Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    FutureBuilder(
+                                      future: pendingDuties(),
+                                      builder: (context,snapshot){
+                                        if(snapshot.hasData){
+                                          return
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    "Pending Duties : ${snapshot.data.toString()}",
+                                                    style: TextStyle(
+                                                      color: Color(0xff4d4c4c),
+                                                      fontSize: 14,
+                                                      fontFamily: "Lato",
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                              child: Center(
-                                                child: Text(num.toString(),
-                                                  style: TextStyle(
-                                                    color: _selected1[num] ? Colors.white: Color(0xffa0a0a0),
-                                                    fontSize: 18,
-                                                    fontFamily: "Lato",
-                                                    fontWeight: FontWeight.w600,
-                                                  ),),
+                                            );
+                                        }
+                                        if(snapshot.hasError){
+                                          return
+                                            Text(
+                                              "Error" ,
+                                              style: TextStyle(
+                                                color: Color(0xff2d2d2d),
+                                                fontSize: 18,
+                                                fontFamily: "Lato",
+                                                fontWeight: FontWeight.w700,
                                               ),
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 20,),
-              Theme(
-                data:  ThemeData().copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                  iconColor: Color(0xff6f6f6f),
-                  title: Row(
-                    children: [
-                      ImageIcon(AssetImage("images/pinicon.png"),color: Colors.green,),
-                      SizedBox(width: 15,),
-                      Text("Location2 ",
-                        style: TextStyle(
-                          color: Color(0xffd72027),
-                          fontSize: 22,
-                          fontFamily: "Lato",
-                          fontWeight: FontWeight.w600,
-                        ),),
-                      Icon(Icons.arrow_forward_outlined),
-                      SizedBox(width: 8,),
-                      Text("LocationA",
-                        style: TextStyle(
-                          color: Color(0xffd72027),
-                          fontSize: 22,
-                          fontFamily: "Lato",
-                          fontWeight: FontWeight.w600,
-                        ),),
-                    ],
-                  ),
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Color(0xff6f6f6f),
-                            width: 0.2
-                        ),
+                                            );
+                                        }
+                                        return CircularProgressIndicator();
+                                      },
 
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              "Pending Duties : 6",
-                              style: TextStyle(
-                                color: Color(0xff4d4c4c),
-                                fontSize: 14,
-                                fontFamily: "Lato",
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    ),
-                    Row(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 130,
-                          width: MediaQuery.of(context).size.width-22,
-                          decoration: BoxDecoration(
-                              color: Color(0xfff3f3f3),
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(8),
-                                  bottomRight: Radius.circular(8)
-                              ),
-                              border: Border.all(
-                                  color:  Color(0xffa0a0a0),
-                                  width: 0.2
-                              )
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8,top: 10,bottom: 10),
-                            child: Column(
-                              children: [
-
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: ListView.builder(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: 5,
-                                      scrollDirection: Axis.horizontal,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context,index){
-                                        var num=index+1;
-                                        return GestureDetector(
-                                          onTap: (){
-                                            setState(() {
-                                              _selected2[index]=! _selected2[index];
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                                            child: Container(
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: Color(0xffb0b0b0),
-                                                ),
-                                                color: _selected2[index] ? Color(0xffd72027) : null,
-                                              ),
-                                              child: Center(
-                                                child: Text(num.toString(),
-                                                  style: TextStyle(
-                                                    color: _selected2[index] ? Colors.white: Color(0xffa0a0a0),
-                                                    fontSize: 18,
-                                                    fontFamily: "Lato",
-                                                    fontWeight: FontWeight.w600,
-                                                  ),),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }),
+                                    ),
+                                  ],
                                 ),
-                                Spacer(),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: ListView.builder(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: 5,
-                                      scrollDirection: Axis.horizontal,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context,index){
-                                        var num=index+6;
-                                        return GestureDetector(
-                                          onTap: (){
-                                            setState(() {
-                                              _selected1[num]=! _selected1[num];
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                                            child: Container(
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: Color(0xffb0b0b0),
-                                                ),
-                                                color: _selected1[num] ? Color(0xffd72027) : null,
-                                              ),
-                                              child: Center(
-                                                child: Text(num.toString(),
-                                                  style: TextStyle(
-                                                    color: _selected1[num] ? Colors.white: Color(0xffa0a0a0),
-                                                    fontSize: 18,
-                                                    fontFamily: "Lato",
-                                                    fontWeight: FontWeight.w600,
-                                                  ),),
-                                              ),
-                                            ),
+
+                              ),
+                              Row(
+                                // mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 130,
+                                    width: MediaQuery.of(context).size.width-22,
+                                    decoration: BoxDecoration(
+                                        color: Color(0xfff3f3f3),
+                                        borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(8),
+                                            bottomRight: Radius.circular(8)
+                                        ),
+                                        border: Border.all(
+                                            color:  Color(0xffa0a0a0),
+                                            width: 0.2
+                                        )
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 8,top: 10,bottom: 10),
+                                      child: Column(
+                                        children: [
+
+                                          Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            height: 50,
+                                            child: ListView.builder(
+                                                physics: NeverScrollableScrollPhysics(),
+                                                itemCount: 5,
+                                                scrollDirection: Axis.horizontal,
+                                                shrinkWrap: true,
+                                                itemBuilder: (context,index){
+                                                  var num=index+1;
+                                                  return GestureDetector(
+                                                    onTap: (){
+                                                      setState(() {
+                                                        _selected1[index]=! _selected1[index];
+                                                      });
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                                                      child: Container(
+                                                        height: 35,
+                                                        width: 35,
+                                                        decoration: BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          border: Border.all(
+                                                            color: Color(0xffb0b0b0),
+                                                          ),
+                                                          color: _selected1[index] ? Color(0xffd72027) : null,
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(num.toString(),
+                                                            style: TextStyle(
+                                                              color: _selected1[index] ? Colors.white: Color(0xffa0a0a0),
+                                                              fontSize: 18,
+                                                              fontFamily: "Lato",
+                                                              fontWeight: FontWeight.w600,
+                                                            ),),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
                                           ),
-                                        );
-                                      }),
-                                )
-                              ],
-                            ),
+                                          Spacer(),
+                                          Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            height: 50,
+                                            child: ListView.builder(
+                                                physics: NeverScrollableScrollPhysics(),
+                                                itemCount: 5,
+                                                scrollDirection: Axis.horizontal,
+                                                shrinkWrap: true,
+                                                itemBuilder: (context,index){
+                                                  var num=index+6;
+                                                  return GestureDetector(
+                                                    onTap: (){
+                                                      setState(() {
+                                                        _selected1[num]=! _selected1[num];
+                                                      });
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                                                      child: Container(
+                                                        height: 35,
+                                                        width: 35,
+                                                        decoration: BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          border: Border.all(
+                                                            color: Color(0xffb0b0b0),
+                                                          ),
+                                                          color: _selected1[num] ? Color(0xffd72027) : null,
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(num.toString(),
+                                                            style: TextStyle(
+                                                              color: _selected1[num] ? Colors.white: Color(0xffa0a0a0),
+                                                              fontSize: 18,
+                                                              fontFamily: "Lato",
+                                                              fontWeight: FontWeight.w600,
+                                                            ),),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
                           ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+                        );
+                      },
+                    );
+
+                  }
+                  if(snapshot.hasError){
+                    Text('Error');
+                  }
+                  return CircularProgressIndicator();
+                },
+
               ),
+              // SizedBox(height: 20,),
+              // Theme(
+              //   data:  ThemeData().copyWith(dividerColor: Colors.transparent),
+              //   child: ExpansionTile(
+              //     iconColor: Color(0xff6f6f6f),
+              //     title: Row(
+              //       children: [
+              //         ImageIcon(AssetImage("images/pinicon.png"),color: Colors.green,),
+              //         SizedBox(width: 15,),
+              //         Text("Location1 ",
+              //           style: TextStyle(
+              //             color: Color(0xffd72027),
+              //             fontSize: 22,
+              //             fontFamily: "Lato",
+              //             fontWeight: FontWeight.w600,
+              //           ),),
+              //         // Icon(Icons.arrow_forward_outlined),
+              //         // SizedBox(width: 8,),
+              //         // Text("LocationB",
+              //         //   style: TextStyle(
+              //         //     color: Color(0xffd72027),
+              //         //     fontSize: 22,
+              //         //     fontFamily: "Lato",
+              //         //     fontWeight: FontWeight.w600,
+              //         //   ),),
+              //       ],
+              //     ),
+              //     children: [
+              //       Container(
+              //         width: MediaQuery.of(context).size.width,
+              //         height: 50,
+              //         decoration: BoxDecoration(
+              //           border: Border.all(
+              //               color: Color(0xff6f6f6f),
+              //               width: 0.2
+              //           ),
+              //
+              //         ),
+              //         child:Row(
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           mainAxisAlignment: MainAxisAlignment.end,
+              //           children: [
+              //             FutureBuilder(
+              //               future: pendingDuties(),
+              //               builder: (context,snapshot){
+              //                 if(snapshot.hasData){
+              //                   return
+              //                     Padding(
+              //                       padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+              //                       child: Row(
+              //                         crossAxisAlignment: CrossAxisAlignment.start,
+              //                         mainAxisAlignment: MainAxisAlignment.end,
+              //                         children: [
+              //                           Text(
+              //                             "Pending Duties : ${snapshot.data.toString()}",
+              //                             style: TextStyle(
+              //                               color: Color(0xff4d4c4c),
+              //                               fontSize: 14,
+              //                               fontFamily: "Lato",
+              //                               fontWeight: FontWeight.w500,
+              //                             ),
+              //                           ),
+              //                         ],
+              //                       ),
+              //                     );
+              //                 }
+              //                 if(snapshot.hasError){
+              //                   return
+              //                     Text(
+              //                       "Error" ,
+              //                       style: TextStyle(
+              //                         color: Color(0xff2d2d2d),
+              //                         fontSize: 18,
+              //                         fontFamily: "Lato",
+              //                         fontWeight: FontWeight.w700,
+              //                       ),
+              //                     );
+              //                 }
+              //                 return CircularProgressIndicator();
+              //               },
+              //
+              //             ),
+              //           ],
+              //         ),
+              //
+              //       ),
+              //       Row(
+              //         // mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           Container(
+              //             height: 130,
+              //             width: MediaQuery.of(context).size.width-22,
+              //             decoration: BoxDecoration(
+              //                 color: Color(0xfff3f3f3),
+              //                 borderRadius: BorderRadius.only(
+              //                     bottomLeft: Radius.circular(8),
+              //                     bottomRight: Radius.circular(8)
+              //                 ),
+              //                 border: Border.all(
+              //                     color:  Color(0xffa0a0a0),
+              //                     width: 0.2
+              //                 )
+              //             ),
+              //             child: Padding(
+              //               padding: const EdgeInsets.only(right: 8,top: 10,bottom: 10),
+              //               child: Column(
+              //                 children: [
+              //
+              //                   Container(
+              //                     width: MediaQuery.of(context).size.width,
+              //                     height: 50,
+              //                     child: ListView.builder(
+              //                         physics: NeverScrollableScrollPhysics(),
+              //                         itemCount: 5,
+              //                         scrollDirection: Axis.horizontal,
+              //                         shrinkWrap: true,
+              //                         itemBuilder: (context,index){
+              //                           var num=index+1;
+              //                           return GestureDetector(
+              //                             onTap: (){
+              //                               setState(() {
+              //                                 _selected1[index]=! _selected1[index];
+              //                               });
+              //                             },
+              //                             child: Padding(
+              //                               padding: const EdgeInsets.symmetric(horizontal: 18),
+              //                               child: Container(
+              //                                 height: 35,
+              //                                 width: 35,
+              //                                 decoration: BoxDecoration(
+              //                                   shape: BoxShape.circle,
+              //                                   border: Border.all(
+              //                                     color: Color(0xffb0b0b0),
+              //                                   ),
+              //                                   color: _selected1[index] ? Color(0xffd72027) : null,
+              //                                 ),
+              //                                 child: Center(
+              //                                   child: Text(num.toString(),
+              //                                     style: TextStyle(
+              //                                       color: _selected1[index] ? Colors.white: Color(0xffa0a0a0),
+              //                                       fontSize: 18,
+              //                                       fontFamily: "Lato",
+              //                                       fontWeight: FontWeight.w600,
+              //                                     ),),
+              //                                 ),
+              //                               ),
+              //                             ),
+              //                           );
+              //                         }),
+              //                   ),
+              //                   Spacer(),
+              //                   Container(
+              //                     width: MediaQuery.of(context).size.width,
+              //                     height: 50,
+              //                     child: ListView.builder(
+              //                         physics: NeverScrollableScrollPhysics(),
+              //                         itemCount: 5,
+              //                         scrollDirection: Axis.horizontal,
+              //                         shrinkWrap: true,
+              //                         itemBuilder: (context,index){
+              //                           var num=index+6;
+              //                           return GestureDetector(
+              //                             onTap: (){
+              //                               setState(() {
+              //                                 _selected1[num]=! _selected1[num];
+              //                               });
+              //                             },
+              //                             child: Padding(
+              //                               padding: const EdgeInsets.symmetric(horizontal: 18),
+              //                               child: Container(
+              //                                 height: 35,
+              //                                 width: 35,
+              //                                 decoration: BoxDecoration(
+              //                                   shape: BoxShape.circle,
+              //                                   border: Border.all(
+              //                                     color: Color(0xffb0b0b0),
+              //                                   ),
+              //                                   color: _selected1[num] ? Color(0xffd72027) : null,
+              //                                 ),
+              //                                 child: Center(
+              //                                   child: Text(num.toString(),
+              //                                     style: TextStyle(
+              //                                       color: _selected1[num] ? Colors.white: Color(0xffa0a0a0),
+              //                                       fontSize: 18,
+              //                                       fontFamily: "Lato",
+              //                                       fontWeight: FontWeight.w600,
+              //                                     ),),
+              //                                 ),
+              //                               ),
+              //                             ),
+              //                           );
+              //                         }),
+              //                   )
+              //                 ],
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       )
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(height: 20,),
+              // Theme(
+              //   data:  ThemeData().copyWith(dividerColor: Colors.transparent),
+              //   child: ExpansionTile(
+              //     iconColor: Color(0xff6f6f6f),
+              //     title: Row(
+              //       children: [
+              //         ImageIcon(AssetImage("images/pinicon.png"),color: Colors.green,),
+              //         SizedBox(width: 15,),
+              //         Text("Location2 ",
+              //           style: TextStyle(
+              //             color: Color(0xffd72027),
+              //             fontSize: 22,
+              //             fontFamily: "Lato",
+              //             fontWeight: FontWeight.w600,
+              //           ),),
+              //         // Icon(Icons.arrow_forward_outlined),
+              //         // SizedBox(width: 8,),
+              //         // Text("LocationA",
+              //         //   style: TextStyle(
+              //         //     color: Color(0xffd72027),
+              //         //     fontSize: 22,
+              //         //     fontFamily: "Lato",
+              //         //     fontWeight: FontWeight.w600,
+              //         //   ),),
+              //       ],
+              //     ),
+              //     children: [
+              //       Container(
+              //         width: MediaQuery.of(context).size.width,
+              //         height: 50,
+              //         decoration: BoxDecoration(
+              //           border: Border.all(
+              //               color: Color(0xff6f6f6f),
+              //               width: 0.2
+              //           ),
+              //
+              //         ),
+              //         child: Padding(
+              //           padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+              //           child: Row(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             mainAxisAlignment: MainAxisAlignment.end,
+              //             children: [
+              //               FutureBuilder(
+              //                 future: pendingDuties(),
+              //                 builder: (context,snapshot){
+              //                   if(snapshot.hasData){
+              //                     return
+              //                       Padding(
+              //                         padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+              //                         child: Row(
+              //                           crossAxisAlignment: CrossAxisAlignment.start,
+              //                           mainAxisAlignment: MainAxisAlignment.end,
+              //                           children: [
+              //                             Text(
+              //                               "Pending Duties : ${snapshot.data.toString()}",
+              //                               style: TextStyle(
+              //                                 color: Color(0xff4d4c4c),
+              //                                 fontSize: 14,
+              //                                 fontFamily: "Lato",
+              //                                 fontWeight: FontWeight.w500,
+              //                               ),
+              //                             ),
+              //                           ],
+              //                         ),
+              //                       );
+              //                   }
+              //                   if(snapshot.hasError){
+              //                     return
+              //                       Text(
+              //                         "Error" ,
+              //                         style: TextStyle(
+              //                           color: Color(0xff2d2d2d),
+              //                           fontSize: 18,
+              //                           fontFamily: "Lato",
+              //                           fontWeight: FontWeight.w700,
+              //                         ),
+              //                       );
+              //                   }
+              //                   return CircularProgressIndicator();
+              //                 },
+              //
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //
+              //       ),
+              //       Row(
+              //         // mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           Container(
+              //             height: 130,
+              //             width: MediaQuery.of(context).size.width-22,
+              //             decoration: BoxDecoration(
+              //                 color: Color(0xfff3f3f3),
+              //                 borderRadius: BorderRadius.only(
+              //                     bottomLeft: Radius.circular(8),
+              //                     bottomRight: Radius.circular(8)
+              //                 ),
+              //                 border: Border.all(
+              //                     color:  Color(0xffa0a0a0),
+              //                     width: 0.2
+              //                 )
+              //             ),
+              //             child: Padding(
+              //               padding: const EdgeInsets.only(right: 8,top: 10,bottom: 10),
+              //               child: Column(
+              //                 children: [
+              //
+              //                   Container(
+              //                     width: MediaQuery.of(context).size.width,
+              //                     height: 50,
+              //                     child: ListView.builder(
+              //                         physics: NeverScrollableScrollPhysics(),
+              //                         itemCount: 5,
+              //                         scrollDirection: Axis.horizontal,
+              //                         shrinkWrap: true,
+              //                         itemBuilder: (context,index){
+              //                           var num=index+1;
+              //                           return GestureDetector(
+              //                             onTap: (){
+              //                               setState(() {
+              //                                 _selected2[index]=! _selected2[index];
+              //                               });
+              //                             },
+              //                             child: Padding(
+              //                               padding: const EdgeInsets.symmetric(horizontal: 18),
+              //                               child: Container(
+              //                                 height: 35,
+              //                                 width: 35,
+              //                                 decoration: BoxDecoration(
+              //                                   shape: BoxShape.circle,
+              //                                   border: Border.all(
+              //                                     color: Color(0xffb0b0b0),
+              //                                   ),
+              //                                   color: _selected2[index] ? Color(0xffd72027) : null,
+              //                                 ),
+              //                                 child: Center(
+              //                                   child: Text(num.toString(),
+              //                                     style: TextStyle(
+              //                                       color: _selected2[index] ? Colors.white: Color(0xffa0a0a0),
+              //                                       fontSize: 18,
+              //                                       fontFamily: "Lato",
+              //                                       fontWeight: FontWeight.w600,
+              //                                     ),),
+              //                                 ),
+              //                               ),
+              //                             ),
+              //                           );
+              //                         }),
+              //                   ),
+              //                   Spacer(),
+              //                   Container(
+              //                     width: MediaQuery.of(context).size.width,
+              //                     height: 50,
+              //                     child: ListView.builder(
+              //                         physics: NeverScrollableScrollPhysics(),
+              //                         itemCount: 5,
+              //                         scrollDirection: Axis.horizontal,
+              //                         shrinkWrap: true,
+              //                         itemBuilder: (context,index){
+              //                           var num=index+6;
+              //                           return GestureDetector(
+              //                             onTap: (){
+              //                               setState(() {
+              //                                 _selected1[num]=! _selected1[num];
+              //                               });
+              //                             },
+              //                             child: Padding(
+              //                               padding: const EdgeInsets.symmetric(horizontal: 18),
+              //                               child: Container(
+              //                                 height: 35,
+              //                                 width: 35,
+              //                                 decoration: BoxDecoration(
+              //                                   shape: BoxShape.circle,
+              //                                   border: Border.all(
+              //                                     color: Color(0xffb0b0b0),
+              //                                   ),
+              //                                   color: _selected1[num] ? Color(0xffd72027) : null,
+              //                                 ),
+              //                                 child: Center(
+              //                                   child: Text(num.toString(),
+              //                                     style: TextStyle(
+              //                                       color: _selected1[num] ? Colors.white: Color(0xffa0a0a0),
+              //                                       fontSize: 18,
+              //                                       fontFamily: "Lato",
+              //                                       fontWeight: FontWeight.w600,
+              //                                     ),),
+              //                                 ),
+              //                               ),
+              //                             ),
+              //                           );
+              //                         }),
+              //                   )
+              //                 ],
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       )
+              //     ],
+              //   ),
+              // ),
 
 
 
