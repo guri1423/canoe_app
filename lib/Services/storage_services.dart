@@ -7,6 +7,7 @@ class  StorageServices{
   static const passKey = "Pass Key";
   static const tokenKey = "Token Key";
   static const userNameKey = "User Name Key";
+  static const userLogged = "User logged Key";
 
   storeEmail(String email)async{
     await storage.write(key: emailKey, value: email);
@@ -43,6 +44,19 @@ class  StorageServices{
   removeEmailAndPass()async{
     await storage.delete(key: emailKey);
     await storage.delete(key: passKey);
+    await storage.delete(key: userLogged);
+  }
+
+  userLoggedIn()async{
+    await storage.write(key: userLogged, value: "true");
+  }
+
+  userLoggedOut()async{
+    await storage.write(key: userLogged, value: "false");
+  }
+
+  Future<String?> getUserLoggedIN()async{
+    return storage.read(key: userLogged);
   }
 
 }

@@ -1,33 +1,42 @@
 
 
-
 import 'package:canoe_app/ContactUs_Screen.dart';
 import 'package:canoe_app/Delete_account.dart';
 import 'package:canoe_app/Duty_history.dart';
 import 'package:canoe_app/Edit_profile.dart';
 import 'package:canoe_app/Logout.dart';
+import 'package:canoe_app/Services/api_services.dart';
+import 'package:canoe_app/Services/storage_services.dart';
+import 'package:canoe_app/home.dart';
+import 'package:canoe_app/modal/logout_modal.dart';
+import 'package:canoe_app/modal/user_profile_model.dart';
+import 'package:canoe_app/signin.dart';
 import 'package:flutter/material.dart';
 
 import 'Chat_Screen.dart';
 import 'Duties_Screen.dart';
 
+final StorageServices _services = StorageServices();
+String? userName;
+
+
+
 List<String>_text=[
   "Edit Profile",
-  "Duty History",
   "Contact Us",
   "Delete Account",
   "Logout"
 ];
 List<String>_image=[
   "images/edit.png",
-  "images/duty.png",
+  // "images/duty.png",
   "images/cnt.png",
   "images/del.png",
   "images/del.png",
 ];
 List<Widget>_widget=[
   EditProfile(),
-  DutyHistory(),
+  // DutyHistory(),
   ContactUs(),
   DeleteAccount(),
 
@@ -35,7 +44,23 @@ List<Widget>_widget=[
 
 ];
 
-Widget profiledialog(BuildContext context){
+
+
+
+Widget profiledialog(BuildContext context,UserProfileModel model){
+  userLogout(LogoutModal model)async{
+    bool ? status = await logout();
+    if(status){
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => Home()));
+      print("user logged out");
+
+
+    }else{
+      print("try again later");
+    }
+  }
+
   var style=  TextStyle(
     color: Color(0xff4e4e4e),
     fontSize: 18,
@@ -54,10 +79,11 @@ Widget profiledialog(BuildContext context){
         ),
         CircleAvatar(
           radius: 40,
+          child: Image.asset('images/profile.jpg'),
         ),
         SizedBox(height: 25,),
         Text(
-          "Jhon Doe",
+         model.user.name,
           style: TextStyle(
             color: Color(0xff2d2d2d),
             fontSize: 20,
@@ -67,7 +93,7 @@ Widget profiledialog(BuildContext context){
         ),
         SizedBox(height: 5,),
         Text(
-          "jhondoe123@gmail.com",
+          model.user.email,
           style: TextStyle(
             color: Color(0xff585858),
             fontSize: 18,
@@ -79,14 +105,14 @@ Widget profiledialog(BuildContext context){
         ),
         ListView.builder(
             shrinkWrap: true,
-            itemCount: 5,
+            itemCount: _text.length,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context,index){
               return MaterialButton(
                 onPressed: (){
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>_widget[index]));
 
-                    if(index==3){
+                    if(index==2){
                       Navigator.pop(context);
                       showDialog(context: context,
                           builder:(BuildContext context){
@@ -201,7 +227,7 @@ Widget profiledialog(BuildContext context){
                               ),
                             );
                           });
-                    } else if (index==4){
+                    } else if (index==3){
                       Navigator.pop(context);
                       showDialog(context: context,
                           builder:(BuildContext context){
@@ -263,6 +289,7 @@ Widget profiledialog(BuildContext context){
                                           children: [
                                             GestureDetector(
                                               onTap: (){
+                                                Navigator.pop(context);
                                                 },
 
                                               child: Container(
@@ -284,19 +311,26 @@ Widget profiledialog(BuildContext context){
                                               ),
                                             ),
                                             Spacer(),
-                                            Container(
-                                              width: 100,
-                                              height: 44,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(41),
-                                                color: Color(0xffd72027),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  "Logout",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
+                                            GestureDetector( onTap: () async{
+                                              await _services.storage.delete(key: StorageServices.userLogged);
+                                              userLogout(LogoutModal(
+                                              ));
+
+                                            },
+                                              child: Container(
+                                                width: 100,
+                                                height: 44,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(41),
+                                                  color: Color(0xffd72027),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Logout",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -372,5 +406,8 @@ Widget profiledialog(BuildContext context){
 
       ],
     ),
+
+
   );
+
 }

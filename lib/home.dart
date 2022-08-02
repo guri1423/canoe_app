@@ -1,3 +1,4 @@
+import 'package:canoe_app/modal/user_profile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:canoe_app/Duties_Screen.dart';
 import 'package:canoe_app/Chat_Screen.dart';
@@ -18,7 +19,6 @@ List<Widget>_body=[
   LocationScreen(),
   ChatScreen(),
   AlertScreen(),
-
 ];
 int selectindex=0;
 

@@ -81,6 +81,7 @@ class _SigninState extends State<Signin> {
     bool ? status = await userLogin(model);
     if(status!){
       print("user logged in");
+      _services.userLoggedIn();
       Navigator.push(context, MaterialPageRoute(builder: (context)=> Home()));
     }else{
       print("try again later");
@@ -230,6 +231,7 @@ class _SigninState extends State<Signin> {
                 SizedBox(height: 30),
                 GestureDetector(
                   onTap:() async {
+
 
 
                     if (_ischecked) {

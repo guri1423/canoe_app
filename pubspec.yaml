@@ -49,6 +49,7 @@ dependencies:
   http:
   fluttertoast: ^8.0.9
   flutter_secure_storage: ^5.0.2
+  geolocator: ^9.0.1
 
 
 
@@ -97,6 +98,7 @@ flutter:
     - images/image14.png
     - images/boat_icon.png
     - images/car_icon.png
+    - images/profile.jpg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

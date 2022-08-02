@@ -1,3 +1,5 @@
+import 'package:canoe_app/Services/storage_services.dart';
+import 'package:canoe_app/home.dart';
 import 'package:canoe_app/signin.dart';
 import 'package:canoe_app/sinup.dart';
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
@@ -11,11 +13,26 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen>with SingleTickerProviderStateMixin {
-  late AnimationController animationController;
-  late Animation<double> animation;
 
-  @override
-  void initState() {
+ late AnimationController animationController;
+ late  Animation<double> animation;
+final StorageServices _services = StorageServices();
+  getResponse()async{
+  String? status =   await _services.getUserLoggedIN();
+  debugPrint(status);
+  if(status == "true"){
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Home()), (route) => false);
+
+  }else{
+
+
+    Future.delayed(Duration(milliseconds: 200),()=>animationController.forward());
+    Future.delayed(Duration(milliseconds: 2000),()=>showscreen(context));
+
+  }
+  }
+
+  animateInitialize(){
     animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1200),
@@ -24,7 +41,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>with SingleTickerProviderS
       parent: animationController,
       curve: Curves.easeIn,
     );
-    Future.delayed(Duration(milliseconds: 2000),()=>showscreen(context));
+  }
+
+  @override
+  void initState() {
+    animateInitialize();
+   getResponse();
     super.initState();
   }
 
@@ -35,16 +57,14 @@ class _WelcomeScreenState extends State<WelcomeScreen>with SingleTickerProviderS
     super.dispose();
   }
 
-  showAnimation(){
-
-  }
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(milliseconds: 200),()=>animationController.forward());
+
     return Scaffold(
         backgroundColor:Colors.white,
-        body:Stack(
+        body:
+      Stack(
           alignment: Alignment.center,
           children: [
             CircularRevealAnimation(

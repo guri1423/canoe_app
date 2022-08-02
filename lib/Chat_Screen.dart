@@ -9,6 +9,8 @@ import 'package:canoe_app/profile_alertdialog.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'modal/user_profile_model.dart';
+
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
 
@@ -72,19 +74,21 @@ getName()async{
               ),
               Spacer(),
               GestureDetector(
-                onTap: () {
+                onTap: ()async{
+                  UserProfileModel model = await userProfile();
                   showDialog(context: context,
-                      builder: (BuildContext context) {
+                      builder:(BuildContext context){
                         return Dialog(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: profiledialog(context),
+                          child: profiledialog(context,model),
                         );
                       });
                 },
                 child: CircleAvatar(
                   radius: 20,
+                  child: Image.asset('images/profile.jpg'),
 
                 ),
               ),

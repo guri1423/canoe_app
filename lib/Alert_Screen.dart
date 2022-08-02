@@ -4,6 +4,8 @@ import 'package:canoe_app/profile_alertdialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'modal/user_profile_model.dart';
+
 class AlertScreen extends StatefulWidget {
   const AlertScreen({Key? key}) : super(key: key);
 
@@ -14,7 +16,7 @@ class AlertScreen extends StatefulWidget {
 
 class _AlertScreenState extends State<AlertScreen> {
 
-  late Future<List<AlertModal>> _future;
+  late Future<AlertModal> _future;
 
 
   @override
@@ -45,19 +47,22 @@ class _AlertScreenState extends State<AlertScreen> {
               ),
               Spacer(),
               GestureDetector(
-                onTap: (){
+                onTap: ()async{
+                  UserProfileModel model = await userProfile();
                   showDialog(context: context,
                       builder:(BuildContext context){
                         return Dialog(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: profiledialog(context),
+                          child: profiledialog(context,model),
                         );
                       });
                 },
                 child: CircleAvatar(
+
                   radius: 20,
+                  child: Image.asset('images/profile.jpg'),
 
                 ),
               )
@@ -65,7 +70,8 @@ class _AlertScreenState extends State<AlertScreen> {
           ),
         ),
       ),
-      body: FutureBuilder<List<AlertModal>>(future: _future,
+      body: FutureBuilder<AlertModal>(
+        future: _future,
       builder: (context,snapshot){
         if (snapshot.hasData) {
           return SingleChildScrollView(
@@ -76,7 +82,7 @@ class _AlertScreenState extends State<AlertScreen> {
                     thickness: 0.5,
                     color: Color(0xff6f6f6f) ,
                   ),
-                  itemCount:snapshot.data!.length,
+                  itemCount:snapshot.data!.alerts.length,
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context,index){
@@ -94,7 +100,7 @@ class _AlertScreenState extends State<AlertScreen> {
                             ),
                           ),
                           SizedBox(width: 20,),
-                          Text(snapshot.data![index].message)
+                          Text  (snapshot.data!.alerts[index].description!)
 
                         ],
                       ),

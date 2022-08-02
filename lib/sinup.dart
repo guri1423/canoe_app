@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 
@@ -9,6 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'Services/api_services.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'package:async/async.dart';
 
 class SignUp extends StatefulWidget {
    SignUp({Key? key}) : super(key: key);
@@ -25,23 +29,6 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _userController=TextEditingController();
   final TextEditingController _passController=TextEditingController();
   final TextEditingController _phoneNoController=TextEditingController();
-
-  // final FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
-
-  // registration(context)async{
-  //   print(_emailController.text);
-  //   print(_passController.text);
-  //   print(_userController.text);
-  //   print(_phoneNoController.text);
-  //   await signup(SignUpRequestModel(name: _userController.text, email: _emailController.text, phoneNo: _phoneNoController.text, password: _passController.text));
-  //
-  //   await _firebaseAuth.createUserWithEmailAndPassword(email:_emailController.text , password:_passController.text).then((value) =>
-  //       FirebaseFirestore.instance.collection('Users').doc(value.user!.uid)
-  //           .set({ 'userid': value.user!.uid, 'UserName': _userController.text })).then((value)
-  //   {
-  //     Navigator.push(context, MaterialPageRoute(builder: (context)=>Signin()));
-  //   } );
-  // }
 
   printD(){
     print("done");
@@ -65,7 +52,7 @@ class _SignUpState extends State<SignUp> {
 
     });
   }
-  userSignUp(Register model)async{
+  userSignUp(Register model,context)async{
 
     bool ? status = await userRegister(model) ;
 
@@ -77,6 +64,8 @@ class _SignUpState extends State<SignUp> {
     }
 
   }
+
+
 
 
   @override
@@ -114,137 +103,137 @@ class _SignUpState extends State<SignUp> {
                   ),
                 ),
 
-                GestureDetector(onTap: () {
-                  showDialog(context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Container(
-                            height: 200,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 20),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: GestureDetector(
-                                      onTap: () => Navigator.pop(context),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .end,
-                                            children: [
-                                              Container(
-                                                height: 25,
-                                                width: 25,
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xffd72027),
-                                                  shape: BoxShape.circle,
-
-                                                ),
-                                                child: Icon(Icons.close,
-                                                  color: Colors.white,
-                                                  size: 15,),
-                                              ),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets
-                                                .symmetric(vertical: 5),
-                                            child: Container(
-                                              width: 289,
-                                              height: 45,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius
-                                                    .circular(4),
-                                                color: Color(0xffd72027),
-                                              ),
-                                              child: Center(
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    getImage();
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    "Import from gallery",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18,
-                                                      fontFamily: "Lato",
-                                                      fontWeight: FontWeight
-                                                          .w600,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets
-                                                .symmetric(vertical: 5),
-                                            child: Container(
-                                              width: 289,
-                                              height: 45,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius
-                                                    .circular(4),
-                                                color: Color(0xffd72027),
-                                              ),
-                                              child: Center(
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    getImage1();
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Text(
-                                                    "Import from Camera",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18,
-                                                      fontFamily: "Lato",
-                                                      fontWeight: FontWeight
-                                                          .w600,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
-                                  SizedBox(height: 20,),
-
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-                  );
-                },
-                  child: Container(child:
-                  _image != null ? CircleAvatar(
-                    radius: 50, backgroundImage: FileImage(_image!),) : Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CircleAvatar(radius: 50,),
-                      Icon(Icons.add_a_photo_outlined
-                        ,
-                        color: Colors.white,),
-                    ],
-                  )
-                  ),
-                ),
+                // GestureDetector(onTap: () {
+                //   showDialog(context: context,
+                //       builder: (BuildContext context) {
+                //         return Dialog(
+                //           shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.circular(12),
+                //           ),
+                //           child: Container(
+                //             height: 200,
+                //             child: Padding(
+                //               padding: const EdgeInsets.symmetric(
+                //                   vertical: 20),
+                //               child: Column(
+                //                 mainAxisAlignment: MainAxisAlignment.center,
+                //                 crossAxisAlignment: CrossAxisAlignment.center,
+                //                 children: [
+                //                   Padding(
+                //                     padding: const EdgeInsets.symmetric(
+                //                         horizontal: 20),
+                //                     child: GestureDetector(
+                //                       onTap: () => Navigator.pop(context),
+                //                       child: Column(
+                //                         children: [
+                //                           Row(
+                //                             mainAxisAlignment: MainAxisAlignment
+                //                                 .end,
+                //                             children: [
+                //                               Container(
+                //                                 height: 25,
+                //                                 width: 25,
+                //                                 decoration: BoxDecoration(
+                //                                   color: Color(0xffd72027),
+                //                                   shape: BoxShape.circle,
+                //
+                //                                 ),
+                //                                 child: Icon(Icons.close,
+                //                                   color: Colors.white,
+                //                                   size: 15,),
+                //                               ),
+                //                             ],
+                //                           ),
+                //                           Padding(
+                //                             padding: const EdgeInsets
+                //                                 .symmetric(vertical: 5),
+                //                             child: Container(
+                //                               width: 289,
+                //                               height: 45,
+                //                               decoration: BoxDecoration(
+                //                                 borderRadius: BorderRadius
+                //                                     .circular(4),
+                //                                 color: Color(0xffd72027),
+                //                               ),
+                //                               child: Center(
+                //                                 child: GestureDetector(
+                //                                   onTap: () {
+                //                                     getImage();
+                //                                     Navigator.pop(context);
+                //                                   },
+                //                                   child: Text(
+                //                                     "Import from gallery",
+                //                                     style: TextStyle(
+                //                                       color: Colors.white,
+                //                                       fontSize: 18,
+                //                                       fontFamily: "Lato",
+                //                                       fontWeight: FontWeight
+                //                                           .w600,
+                //                                     ),
+                //                                   ),
+                //                                 ),
+                //                               ),
+                //                             ),
+                //                           ),
+                //                           Padding(
+                //                             padding: const EdgeInsets
+                //                                 .symmetric(vertical: 5),
+                //                             child: Container(
+                //                               width: 289,
+                //                               height: 45,
+                //                               decoration: BoxDecoration(
+                //                                 borderRadius: BorderRadius
+                //                                     .circular(4),
+                //                                 color: Color(0xffd72027),
+                //                               ),
+                //                               child: Center(
+                //                                 child: GestureDetector(
+                //                                   onTap: () {
+                //                                     getImage1();
+                //                                     Navigator.pop(context);
+                //                                   },
+                //                                   child: Text(
+                //                                     "Import from Camera",
+                //                                     style: TextStyle(
+                //                                       color: Colors.white,
+                //                                       fontSize: 18,
+                //                                       fontFamily: "Lato",
+                //                                       fontWeight: FontWeight
+                //                                           .w600,
+                //                                     ),
+                //                                   ),
+                //                                 ),
+                //                               ),
+                //                             ),
+                //                           ),
+                //                         ],
+                //                       ),
+                //                     ),
+                //                   ),
+                //
+                //                   SizedBox(height: 20,),
+                //
+                //                 ],
+                //               ),
+                //             ),
+                //           ),
+                //         );
+                //       }
+                //   );
+                // },
+                //   child: Container(child:
+                //   _image != null ? CircleAvatar(
+                //     radius: 50, backgroundImage: FileImage(_image!),) : Stack(
+                //     alignment: Alignment.center,
+                //     children: [
+                //       CircleAvatar(radius: 50,),
+                //       Icon(Icons.add_a_photo_outlined
+                //         ,
+                //         color: Colors.white,),
+                //     ],
+                //   )
+                //   ),
+                // ),
 
                 SizedBox(height: 30,),
 
@@ -322,13 +311,14 @@ class _SignUpState extends State<SignUp> {
 
                 GestureDetector(
                   onTap:(){
+
                     userSignUp(Register(
                       name: _userController.text,
                       password: _passController.text,
                       email: _emailController.text,
                       phone: _phoneNoController.text,
 
-                    ));
+                    ),context);
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -357,4 +347,6 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
+
+
 }

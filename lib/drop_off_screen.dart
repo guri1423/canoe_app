@@ -1,6 +1,9 @@
 import 'package:canoe_app/profile_alertdialog.dart';
 import 'package:flutter/material.dart';
 
+import 'Services/api_services.dart';
+import 'modal/user_profile_model.dart';
+
 
 class DropOffScreen extends StatefulWidget {
   const DropOffScreen({Key? key}) : super(key: key);
@@ -29,14 +32,15 @@ class _DropOffScreenState extends State<DropOffScreen> {
             ),
             Spacer(),
             GestureDetector(
-              onTap: (){
+              onTap: ()async{
+                UserProfileModel model = await userProfile();
                 showDialog(context: context,
                     builder:(BuildContext context){
                       return Dialog(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: profiledialog(context),
+                        child: profiledialog(context,model),
                       );
                     });
               },
